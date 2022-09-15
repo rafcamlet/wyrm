@@ -1,3 +1,6 @@
 $:.unshift File.dirname(__FILE__)
 
-require 'scratch/interpreter'
+require 'scratch/node/base_node'
+require 'scratch/lexer'
+require 'scratch/parser'
+require 'scratch/evaluator'
