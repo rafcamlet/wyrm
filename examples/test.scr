@@ -1,0 +1,14 @@
+
+print('')
+print ( 'Test scratch-a. To tylko tymczasowa nazwa. Chyba :D ')
+
+fn multiline_function()
+  sixteen = 10 + 6
+  seventeen = 10 + 7
+  sixteen + seventeen
+end
+
+fn oneline_function() print(' ' * 20, multiline_function())
+
+print(' ' * 14, 'Wynik poniżej:')
+oneline_function()

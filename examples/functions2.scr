@@ -1,0 +1,7 @@
+fn test()
+  a = 20
+  print('---')
+end
+
+test()
+print(a)

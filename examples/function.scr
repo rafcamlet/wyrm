@@ -1,0 +1,25 @@
+fn hello()
+  print('hello world')
+  print('hello asdf')
+end
+
+fn hi() 10 + 20 * 30
+
+
+print('cześć!')
+hello()
+print(hi())
+
+a = 10
+
+print ( 8 + a )
+print ( a * 6 )
+
+  test = 20
+
+print ( test * 6 )
+
+
+fn asdf() print(test * 20)
+
+asdf()

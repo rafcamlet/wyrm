@@ -4,11 +4,7 @@ module Scratch
   module Node
     class Binding < BaseNode
       def eval
-        if @value.include? '.'
-          Float(@value)
-        else
-          Integer(@value)
-        end
+        ctx[@value.to_sym] = children.map(&:eval).last
       end
     end
   end

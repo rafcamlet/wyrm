@@ -5,6 +5,7 @@ module Scratch
   class Lexer
     ONE_CHAR_LEX = ['(', ')', ':', ',', '.', '-', '+', '/', "\n"].freeze
     MULTI_CHAR_LEX = ['==', '!=', '==', '!=', '<>', '>=', '<=', '**', '='].freeze
+    KEYWORD = ['end'].freeze
 
     def initialize(source)
       raise 'source not provided' if source.nil? || source == ''
@@ -17,7 +18,7 @@ module Scratch
       until @source.eos?
         c = @source.getch
 
-        next if c =~ /\s/
+        next if c =~ /\s/ && c != "\n"
 
         @source.skip_until("\n") and return if c == '#'
 
@@ -39,7 +40,9 @@ module Scratch
         elsif c =~ /\d/
           @tokens << Token.new(:number, c + @source.scan(/[\d.]*/).to_s)
         elsif c =~ /\w/
-          @tokens << Token.new(:identifier, c + @source.scan(/[\w_]*/).to_s)
+          lex = c + @source.scan(/[\w_]*/).to_s
+          type = KEYWORD.include?(lex) ? lex.to_sym : :identifier
+          @tokens << Token.new(type, lex)
         end
       end
       @tokens

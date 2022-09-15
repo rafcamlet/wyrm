@@ -1,10 +1,13 @@
 require 'scratch/node/main'
+require 'scratch/node/definition'
 require 'scratch/node/boolean'
 require 'scratch/node/function'
 require 'scratch/node/number'
 require 'scratch/node/operator'
 require 'scratch/node/text'
 require 'scratch/node/unary'
+require 'scratch/node/binding'
+require 'scratch/node/variable'
 
 
 
@@ -33,17 +36,19 @@ module Scratch
     UNARY_OPERATORS = %i[- +].freeze
     PREFIX_PRECEDENCE = 7
 
-    attr_reader :token
+    attr_reader :token, :ctx
 
-    def initialize(tokens)
+    def initialize(tokens, ctx)
       @tokens = tokens
       @tree = Node::Main.new
+      @ctx = ctx
     end
 
     def call
       while !next_token.nil?
         get_token
-        @tree << parse
+        node = parse
+        @tree << node unless node.nil?
       end
 
       @tree
@@ -61,12 +66,12 @@ module Scratch
           Node::Number.new(token.type, token.lexeme)
         elsif token.type == :text
           Node::Text.new(token.type, token.lexeme)
-        elsif token.type == :param
-          Node::Param.new(token.type, token.lexeme)
-        elsif token.type.in? UNARY_OPERATORS
+        elsif UNARY_OPERATORS.include? token.type
           parse_unary_operator
+        elsif token.type == :"\n"
+          nil
         else
-          raise "Can't parse token type: #{token.type} | lexeme: #{token.lexeme}"
+          raise "Can't parse token type: #{token.type.inspect} | lexeme: #{token.lexeme.inspect}"
         end
 
       return if node.nil?
@@ -83,11 +88,49 @@ module Scratch
 
     def parse_identifier
       return Node::Boolean.new(:boolean, token.lexeme) if %w[true false].include? token.lexeme
+      return parse_binding if next_token.type == :'='
+      return parse_function if token.lexeme == 'fn'
+      return parse_function_call if next_token.type == :'('
 
+      Node::Variable.new(:variable, token.lexeme, ctx: ctx)
+    end
+
+    def parse_function_call
       lexeme = token.lexeme
       return nil unless get_if(:"(")
 
-      Node::Function.new(:function, lexeme, parse_args)
+      Node::Function.new(:function, lexeme, parse_args, ctx: ctx)
+    end
+
+    def parse_binding
+      name = token.lexeme
+      get_token 2
+      node = Node::Binding.new(:binding, name, parse, ctx: ctx)
+      get_if :"\n"
+      node
+    end
+
+    def parse_function
+      name = get_if(:identifier)
+      #params
+      return nil unless get_if(:"(")
+      return nil unless get_if(:")")
+
+      oneline = next_token.type != :"\n"
+
+      return nil unless oneline || get_if(:"\n")
+
+      # body
+      children = []
+      get_token
+
+      while token.type != (oneline ? :"\n" : :end)
+        node = parse
+        children << node unless node.nil?
+        get_token
+      end
+
+      Node::Definition.new(:definition, name.lexeme, children, ctx: ctx)
     end
 
     def parse_operator(node)
@@ -148,9 +191,9 @@ module Scratch
     end
 
     def get_if(type)
-      return get_token if next_token.type == type
+      return get_token if next_token&.type == type
 
-      raise "Expected #{type} but got #{next_token.type}"
+      raise "Expected '#{type}' but got '#{next_token&.type}'"
     end
   end
 end

@@ -5,10 +5,17 @@ module Scratch
     class Function < BaseNode
       FunctionNotImplmentedError = Class.new(StandardError)
 
-      def eval
-        raise_function_not_implmented unless respond_to?(@value.to_sym)
+      NATIVE = [:print].freeze
 
-        public_send(@value.to_sym, *children.map(&:eval))
+      def eval
+        name = @value.to_sym
+        if NATIVE.include? name
+          public_send(@value.to_sym, *children.map(&:eval))
+        elsif !ctx[name].nil?
+          ctx[name].call
+        else
+          raise_function_not_implmented unless respond_to?(@value.to_sym)
+        end
       end
 
       def print(*args)
