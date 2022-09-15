@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+require_relative '../lib/scratch'
+
+path = ARGV[0]
+source = File.read(path)
+
+lexims = Scratch::Lexer.new(source).tokenize
+nodes = Scratch::Parser.new(lexims).parse
+Scratch::Evaluator.new(nodes).eval
+
+exit(0)
