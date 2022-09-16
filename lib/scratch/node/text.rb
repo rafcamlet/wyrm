@@ -1,7 +1,7 @@
 module Scratch
   module Node
     class Text < BaseNode
-      def eval
+      def eval(**opts)
         @value.to_s
       end
     end

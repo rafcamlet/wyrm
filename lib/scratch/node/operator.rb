@@ -1,7 +1,7 @@
 module Scratch
   module Node
     class Operator < BaseNode
-      def eval
+      def eval(**opts)
         arg1 = children.first.eval
         arg2 = children.last.eval
         return nil if arg1.nil? || arg2.nil?

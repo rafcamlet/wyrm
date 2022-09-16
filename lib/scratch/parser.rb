@@ -9,8 +9,6 @@ require 'scratch/node/unary'
 require 'scratch/node/binding'
 require 'scratch/node/variable'
 
-
-
 module Scratch
   class Parser
     PRECEDENCE = {
@@ -36,7 +34,7 @@ module Scratch
     UNARY_OPERATORS = %i[- +].freeze
     PREFIX_PRECEDENCE = 7
 
-    attr_reader :token, :ctx
+    attr_reader :token, :ctx, :tokens
 
     def initialize(tokens, ctx)
       @tokens = tokens
@@ -105,16 +103,29 @@ module Scratch
     def parse_binding
       name = token.lexeme
       get_token 2
-      node = Node::Binding.new(:binding, name, parse, ctx: ctx)
-      get_if :"\n"
-      node
+      Node::Binding.new(:binding, name, parse, ctx: ctx)
     end
 
     def parse_function
-      name = get_if(:identifier)
-      #params
-      return nil unless get_if(:"(")
-      return nil unless get_if(:")")
+      params = []
+
+      name = get_token if next_token.type == :identifier
+
+      get_if(:"(")
+      get_token
+
+      if token.type != :")"
+        params << parse
+
+        # There is more than one argument
+        while next_token.type == :","
+          get_token(2)
+          params << parse
+        end
+
+        get_if(:")")
+      end
+
 
       oneline = next_token.type != :"\n"
 
@@ -122,15 +133,28 @@ module Scratch
 
       # body
       children = []
-      get_token
 
-      while token.type != (oneline ? :"\n" : :end)
+      # while token.type != (oneline ? :"\n" : :end)
+      #   node = parse
+      #   children << node unless node.nil?
+      #   break if oneline && next_token.type == :"\n"
+
+      #   get_token
+      # end
+
+      loop do
+        get_token
         node = parse
         children << node unless node.nil?
-        get_token
+
+        get_token and break if next_token.type == :end
+        break if oneline && next_token.type == :"\n"
       end
 
-      Node::Definition.new(:definition, name.lexeme, children, ctx: ctx)
+
+      node = Node::Definition.new(:definition, name&.lexeme, children, ctx: ctx)
+      node.params = params
+      node
     end
 
     def parse_operator(node)
@@ -193,7 +217,7 @@ module Scratch
     def get_if(type)
       return get_token if next_token&.type == type
 
-      raise "Expected '#{type}' but got '#{next_token&.type}'"
+      raise "Expected '#{type.inspect}' but got '#{next_token&.type}'"
     end
   end
 end

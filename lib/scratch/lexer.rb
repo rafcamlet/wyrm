@@ -20,7 +20,7 @@ module Scratch
 
         next if c =~ /\s/ && c != "\n"
 
-        @source.skip_until("\n") and return if c == '#'
+        @source.skip_until(/\n/) and next if c == '#'
 
         if ONE_CHAR_LEX.include?(c)
           @tokens << Token.new(c)

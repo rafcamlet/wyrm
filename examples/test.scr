@@ -1,14 +1,58 @@
+ # Anonymous functions
 
-print('')
-print ( 'Test scratch-a. To tylko tymczasowa nazwa. Chyba :D ')
+ give_me_6 = fn() 4 + 2
+ print('anonymous: ', give_me_6())
 
-fn multiline_function()
-  sixteen = 10 + 6
-  seventeen = 10 + 7
-  sixteen + seventeen
+ # All functions are clousures
+ # They have access to the scope they were defined
+
+  fn add(x) fn(y) x + y
+  add_5 = add(5)
+  print('clousure: ', add_5(10)) # 15
+
+# -----
+
+  iter = 0
+  fn increment() iter = iter + 1
+  increment()
+  increment()
+  increment()
+  print('iterator: ', iter) # 3
+
+# -----
+
+fn parent(name)
+  parent_value = 0
+  fn()
+    parent_value = parent_value + 1
+    print(name, ': ', parent_value)
+  end
 end
 
-fn oneline_function() print(' ' * 20, multiline_function())
+child = parent('gen_1')
+child() # 1
+child() # 2
 
-print(' ' * 14, 'Wynik poniżej:')
-oneline_function()
+
+child2 = parent('gen_2')
+child2() # 1
+child2() # 2
+
+child()
+child()
+
+
+fn gen(name)
+  iter = 0
+  fn()
+    iter = iter + 1
+    print(name, ': ', iter)
+  end
+end
+
+first = gen('first')
+first()
+second = gen('second')
+second()
+first()
+

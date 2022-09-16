@@ -7,12 +7,12 @@ module Scratch
 
       NATIVE = [:print].freeze
 
-      def eval
+      def eval(**opts)
         name = @value.to_sym
         if NATIVE.include? name
           public_send(@value.to_sym, *children.map(&:eval))
-        elsif !ctx.env[name].nil?
-          ctx.env[name].call
+        elsif (needle = ctx.find_in_stack(name))
+          needle.call(*children.map(&:eval))
         else
           raise_function_not_implmented unless respond_to?(@value.to_sym)
         end
@@ -27,6 +27,8 @@ module Scratch
       def raise_function_not_implmented
         raise FunctionNotImplmentedError, "Function '#{@value}' is not implemented"
       end
+
+      private
     end
   end
 end

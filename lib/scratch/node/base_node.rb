@@ -1,3 +1,5 @@
+require 'tty-tree'
+
 module Scratch
   module Node
     class BaseNode

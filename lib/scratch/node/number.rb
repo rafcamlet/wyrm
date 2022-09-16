@@ -3,7 +3,7 @@ require 'bigdecimal'
 module Scratch
   module Node
     class Number < BaseNode
-      def eval
+      def eval(**opts)
         if @value.include? '.'
           Float(@value)
         else

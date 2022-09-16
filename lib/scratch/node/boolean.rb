@@ -1,7 +1,7 @@
 module Scratch
   module Node
     class Boolean < BaseNode
-      def eval
+      def eval(**opts)
         return true if @value == 'true'
         return false if @value == 'false'
 

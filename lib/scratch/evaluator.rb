@@ -1,11 +1,12 @@
 module Scratch
   class Evaluator
-    attr_reader :program, :output, :env, :stdout
+    attr_reader :program, :output, :env, :stdout, :stack
 
     def initialize(code)
       @code = code
       @env = {}
       @stdout = []
+      @stack = [{}]
     end
 
     def eval
@@ -18,55 +19,43 @@ module Scratch
       lexemes = Lexer.new(@code).call
       result = Parser.new(lexemes, self).call.render
       puts '=' * 20
-      pp @env
+      pp @stack
       self
     end
 
+    def find_in_stack(key)
+      key = key.to_sym
 
-    # def initialize
-    #   @output = []
-    #   @env = {}
-    # end
+      stack.find do |s|
+        break if s[:__scope__]
 
-    # def interpret(ast)
-    #   @program = ast
+        s[key]
+      end&.fetch(key)
+    end
 
-    #   interpret_nodes(program.expressions)
-    # end
+    def put_in_stack(key, value)
+      key = key.to_sym
 
-    # private
+      arr = stack.find do |s|
+        break if s[:__scope__]
 
-    # def interpret_nodes(nodes)
-    #   last_value = nil
+        s[key.to_sym]
+      end
 
-    #   nodes.each do |node|
-    #     last_value = interpret_node(node)
-    #   end
+      if arr
+        arr[key] = value
+      else
+        stack.first[key] = value
+      end
+    end
 
-    #   last_value
-    # end
+    def change_stack(new_stack)
+      return yield if new_stack.nil?
 
-    # def interpret_node(node)
-    #   interpreter_method = "interpret_#{node.type}"
-    #   send(interpreter_method, node)
-    # end
-
-    # def interpret_var_binding(var_binding)
-    #   env[var_binding.var_name_as_str] = interpret_node(var_binding.right)
-    # end
-
-    # def interpret_unary_operator(unary_op)
-    #   case unary_op.operator
-    #   when :'-'
-    #     -(interpret_node(unary_op.operand))
-    #   else # :'!'
-    #     !(interpret_node(unary_op.operand))
-    #   end
-    # end
-
-    # def interpret_number(number)
-    #   number.value
-    # end
-
+      old_stack = stack
+      @stack = new_stack
+      yield
+      @stack = old_stack
+    end
   end
 end
