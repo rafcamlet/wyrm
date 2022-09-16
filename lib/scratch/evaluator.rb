@@ -1,22 +1,25 @@
 module Scratch
   class Evaluator
-    attr_reader :program, :output, :ctx
+    attr_reader :program, :output, :env, :stdout
 
     def initialize(code)
       @code = code
-      @ctx = {}
+      @env = {}
+      @stdout = []
     end
 
     def eval
       lexemes = Lexer.new(@code).call
-      result = Parser.new(lexemes, ctx).call.eval
+      result = Parser.new(lexemes, self).call.eval
+      self
     end
 
     def render
       lexemes = Lexer.new(@code).call
-      result = Parser.new(lexemes, ctx).call.render
+      result = Parser.new(lexemes, self).call.render
       puts '=' * 20
-      pp @ctx
+      pp @env
+      self
     end
 
 

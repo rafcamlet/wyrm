@@ -11,15 +11,17 @@ module Scratch
         name = @value.to_sym
         if NATIVE.include? name
           public_send(@value.to_sym, *children.map(&:eval))
-        elsif !ctx[name].nil?
-          ctx[name].call
+        elsif !ctx.env[name].nil?
+          ctx.env[name].call
         else
           raise_function_not_implmented unless respond_to?(@value.to_sym)
         end
       end
 
       def print(*args)
-        puts args.join ' '
+        output = args.join(' ')
+        ctx.stdout << output
+        puts output
       end
 
       def raise_function_not_implmented

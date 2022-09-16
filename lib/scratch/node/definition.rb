@@ -4,7 +4,7 @@ module Scratch
       attr_accessor :params
 
       def eval
-        ctx[@value.to_sym] = self
+        ctx.env[@value.to_sym] = self
       end
 
       def call

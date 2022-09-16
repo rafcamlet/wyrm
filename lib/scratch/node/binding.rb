@@ -4,7 +4,7 @@ module Scratch
   module Node
     class Binding < BaseNode
       def eval
-        ctx[@value.to_sym] = children.map(&:eval).last
+        ctx.env[@value.to_sym] = children.map(&:eval).last
       end
     end
   end
