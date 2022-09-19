@@ -1,6 +1,6 @@
 require 'bigdecimal'
 
-module Scratch
+module Wyrm
   module Node
     class Number < BaseNode
       def eval(**opts)

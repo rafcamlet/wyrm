@@ -1,4 +1,4 @@
-module Scratch
+module Wyrm
   module Node
     class Definition < BaseNode
       attr_accessor :params, :anonymous, :context

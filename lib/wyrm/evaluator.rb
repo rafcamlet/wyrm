@@ -1,4 +1,4 @@
-module Scratch
+module Wyrm
   class Evaluator
     attr_reader :program, :output, :env, :stdout, :stack
 

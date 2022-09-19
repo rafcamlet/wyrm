@@ -1,6 +1,6 @@
 describe 'variables' do
 
-  subject { Scratch::Evaluator.new(code).eval.stdout }
+  subject { Wyrm::Evaluator.new(code).eval.stdout }
 
   context do
     let(:code) do

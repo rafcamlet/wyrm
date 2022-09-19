@@ -1,4 +1,4 @@
-module Scratch
+module Wyrm
   module Node
     class Unary < BaseNode
       def eval(**opts)

@@ -1,6 +1,6 @@
 require 'tty-tree'
 
-module Scratch
+module Wyrm
   module Node
     class BaseNode
       attr_accessor :type, :children, :value, :ctx

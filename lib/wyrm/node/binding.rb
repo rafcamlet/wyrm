@@ -1,6 +1,6 @@
 require 'bigdecimal'
 
-module Scratch
+module Wyrm
   module Node
     class Binding < BaseNode
       def eval(**opts)

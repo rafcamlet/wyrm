@@ -1,15 +1,15 @@
-require 'scratch/node/main'
-require 'scratch/node/definition'
-require 'scratch/node/boolean'
-require 'scratch/node/function'
-require 'scratch/node/number'
-require 'scratch/node/operator'
-require 'scratch/node/text'
-require 'scratch/node/unary'
-require 'scratch/node/binding'
-require 'scratch/node/variable'
+require 'wyrm/node/main'
+require 'wyrm/node/definition'
+require 'wyrm/node/boolean'
+require 'wyrm/node/function'
+require 'wyrm/node/number'
+require 'wyrm/node/operator'
+require 'wyrm/node/text'
+require 'wyrm/node/unary'
+require 'wyrm/node/binding'
+require 'wyrm/node/variable'
 
-module Scratch
+module Wyrm
   class Parser
     PRECEDENCE = {
       'or': 1,

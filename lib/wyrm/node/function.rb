@@ -1,4 +1,4 @@
-module Scratch
+module Wyrm
   module Node
     # Use blank? / present? to check for nullisness
     # Table parameters are returned as arrays so you may want flatten args

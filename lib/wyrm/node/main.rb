@@ -1,4 +1,4 @@
-module Scratch
+module Wyrm
   module Node
     class Main
       attr_accessor :nodes

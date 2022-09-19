@@ -1,6 +1,6 @@
 describe 'functions' do
 
-  subject { Scratch::Evaluator.new(code).eval.stdout }
+  subject { Wyrm::Evaluator.new(code).eval.stdout }
 
   context 'oneliner' do
     let(:code) do

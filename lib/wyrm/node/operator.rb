@@ -1,4 +1,4 @@
-module Scratch
+module Wyrm
   module Node
     class Operator < BaseNode
       def eval(**_opts)

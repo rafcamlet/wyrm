@@ -1,7 +1,7 @@
-require 'scratch/token'
+require 'wyrm/token'
 require 'strscan'
 
-module Scratch
+module Wyrm
   class Lexer
     ONE_CHAR_LEX = ['(', ')', ':', ',', '.', '-', '+', '/', "\n"].freeze
     MULTI_CHAR_LEX = ['==', '!=', '==', '!=', '<>', '>=', '<=', '**', '='].freeze

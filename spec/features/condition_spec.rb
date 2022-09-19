@@ -2,7 +2,7 @@
 # You should read this
 
 describe 'conditions' do
-  subject { Scratch::Evaluator.new(code).eval.stdout }
+  subject { Wyrm::Evaluator.new(code).eval.stdout }
 
   describe 'and' do
     context 'when condition is positive' do

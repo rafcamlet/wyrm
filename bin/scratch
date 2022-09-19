@@ -1,11 +1,11 @@
 #!/usr/bin/env ruby
 
-require_relative '../lib/scratch'
+require_relative '../lib/wyrm'
 
 path = ARGV[0]
 code = File.read(path)
 
-evaluator = Scratch::Evaluator.new(code)
+evaluator = Wyrm::Evaluator.new(code)
 evaluator.eval
 
 evaluator.render if ENV['DEBUG'] == 'true'

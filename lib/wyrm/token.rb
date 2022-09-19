@@ -1,4 +1,4 @@
-class Scratch::Token
+class Wyrm::Token
   attr_reader :type, :lexeme
 
   def initialize(type, lexeme = nil)
