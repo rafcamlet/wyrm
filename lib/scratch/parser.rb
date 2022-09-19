@@ -12,6 +12,8 @@ require 'scratch/node/variable'
 module Scratch
   class Parser
     PRECEDENCE = {
+      'or': 1,
+      'and': 2,
       '===': 3,
       '!==': 3,
       '==': 3,

@@ -5,7 +5,7 @@ module Scratch
   class Lexer
     ONE_CHAR_LEX = ['(', ')', ':', ',', '.', '-', '+', '/', "\n"].freeze
     MULTI_CHAR_LEX = ['==', '!=', '==', '!=', '<>', '>=', '<=', '**', '='].freeze
-    KEYWORD = ['end'].freeze
+    KEYWORD = ['end', 'and', 'or'].freeze
 
     def initialize(source)
       raise 'source not provided' if source.nil? || source == ''
