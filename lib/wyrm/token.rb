@@ -5,4 +5,8 @@ class Wyrm::Token
     @type = type.to_sym
     @lexeme = lexeme || type
   end
+
+  def ==(other)
+    @type == other
+  end
 end

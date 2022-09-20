@@ -1,7 +1,7 @@
 module Wyrm
   module Node
     class Return < BaseNode
-      def eval
+      def eval(**opts)
         throw :return, children.first&.eval
       end
     end

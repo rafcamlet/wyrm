@@ -2,7 +2,7 @@ module Wyrm
   module Node
     class Operator < BaseNode
       def eval(**_opts)
-        case type
+        case @value.to_sym
         when :and then children.first.eval && children.last.eval
         when :or then children.first.eval || children.last.eval
         else
@@ -15,9 +15,7 @@ module Wyrm
       end
 
       def eval_method
-        # return :'==' if type == :'==='
-
-        type
+        @value.to_sym
       end
     end
   end

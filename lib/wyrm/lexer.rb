@@ -4,7 +4,7 @@ require 'strscan'
 module Wyrm
   class Lexer
     ONE_CHAR_LEX = ['(', ')', ':', ',', '.', '-', '+', '/', "\n"].freeze
-    MULTI_CHAR_LEX = ['==', '!=', '==', '!=', '<>', '>=', '<=', '**', '='].freeze
+    MULTI_CHAR_LEX = ['==', '!=', '==', '>=', '<=', '**', '='].freeze
     KEYWORD = ['end', 'and', 'or', 'return'].freeze
 
     def initialize(source)

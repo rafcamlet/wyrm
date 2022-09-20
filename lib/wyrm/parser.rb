@@ -15,12 +15,9 @@ module Wyrm
     PRECEDENCE = {
       'or': 1,
       'and': 2,
-      '===': 3,
-      '!==': 3,
       '==': 3,
       '!=': 3,
       '=': 3,
-      '<>': 3,
       '>': 4,
       '<': 4,
       '>=': 4,
@@ -59,19 +56,20 @@ module Wyrm
 
     def parse(precedence = 0)
       node =
-        if token.type == :identifier
+        if token == :identifier
           parse_identifier
-        elsif token.type == :'('
+        elsif token == :'('
           parse_group
-        elsif token.type == :number
-          Node::Number.new(token.type, token.lexeme)
-        elsif token.type == :text
-          Node::Text.new(token.type, token.lexeme)
+        elsif token == :number
+          Node::Number.new(token.lexeme)
+        elsif token == :text
+          Node::Text.new(token.lexeme)
         elsif UNARY_OPERATORS.include? token.type
           parse_unary_operator
-        elsif token.type == :return
-          parse_return
-        elsif token.type == :"\n"
+        elsif token == :return
+          get_token
+          Node::Return.new(nil, parse)
+        elsif token == :"\n"
           nil
         else
           raise "Can't parse token type: #{token.type.inspect} | lexeme: #{token.lexeme.inspect}"
@@ -90,40 +88,40 @@ module Wyrm
     end
 
     def parse_identifier
-      return Node::Boolean.new(:boolean, token.lexeme) if %w[true false].include? token.lexeme
-      return parse_binding if next_token.type == :'='
+      return Node::Boolean.new(token.lexeme) if %w[true false].include? token.lexeme
+      return parse_binding if next_token == :'='
       return parse_function if token.lexeme == 'fn'
-      return parse_function_call if next_token.type == :'('
+      return parse_function_call if next_token == :'('
 
-      Node::Variable.new(:variable, token.lexeme, ctx: ctx)
+      Node::Variable.new(token.lexeme, ctx: ctx)
     end
 
     def parse_function_call
       lexeme = token.lexeme
       return nil unless get_if(:"(")
 
-      Node::Function.new(:function, lexeme, parse_args, ctx: ctx)
+      Node::Function.new(lexeme, parse_args, ctx: ctx)
     end
 
     def parse_binding
       name = token.lexeme
       get_token 2
-      Node::Binding.new(:binding, name, parse, ctx: ctx)
+      Node::Binding.new(name, parse, ctx: ctx)
     end
 
     def parse_function
       params = []
 
-      name = get_token if next_token.type == :identifier
+      name = get_token if next_token == :identifier
 
       get_if(:"(")
       get_token
 
-      if token.type != :")"
+      if token != :")"
         params << parse
 
         # There is more than one argument
-        while next_token.type == :","
+        while next_token == :","
           get_token(2)
           params << parse
         end
@@ -131,49 +129,39 @@ module Wyrm
         get_if(:")")
       end
 
-
-      oneline = next_token.type != :"\n"
+      oneline = next_token != :"\n"
 
       return nil unless oneline || get_if(:"\n")
 
       # body
       children = []
 
-      # while token.type != (oneline ? :"\n" : :end)
-      #   node = parse
-      #   children << node unless node.nil?
-      #   break if oneline && next_token.type == :"\n"
-
-      #   get_token
-      # end
-
       loop do
         get_token
         node = parse
         children << node unless node.nil?
 
-        get_token and break if next_token.type == :end
-        break if oneline && next_token.type == :"\n"
+        get_token and break if next_token == :end
+        break if oneline && next_token == :"\n"
       end
 
 
-      node = Node::Definition.new(:definition, name&.lexeme, children, ctx: ctx)
+      node = Node::Definition.new(name&.lexeme, children, ctx: ctx)
       node.params = params
       node
     end
 
     def parse_operator(node)
-      type = token.type
       lexeme = token.lexeme
       precedence = token_precedence(token)
       get_token
-      Node::Operator.new(type, lexeme, [node, parse(precedence)])
+      Node::Operator.new(lexeme, [node, parse(precedence)])
     end
 
     def parse_unary_operator
       lexeme = token.lexeme
       get_token
-      Node::Unary.new(:unary, lexeme, parse(PREFIX_PRECEDENCE))
+      Node::Unary.new(lexeme, parse(PREFIX_PRECEDENCE))
     end
 
     def parse_group
@@ -188,7 +176,7 @@ module Wyrm
       args = []
 
       # Emtpy function call
-      if next_token.type == :")"
+      if next_token == :")"
         get_token
         return args
       end
@@ -197,7 +185,7 @@ module Wyrm
       args << parse
 
       # There is more than one argument
-      while next_token.type == :","
+      while next_token == :","
         get_token(2)
         args << parse
       end
@@ -205,11 +193,6 @@ module Wyrm
       raise 'Function not closed' unless get_if(:")")
 
       args
-    end
-
-    def parse_return
-      get_token
-      Node::Return.new(:return, nil, parse)
     end
 
     def next_token
