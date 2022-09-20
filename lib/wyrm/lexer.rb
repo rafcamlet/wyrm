@@ -5,7 +5,7 @@ module Wyrm
   class Lexer
     ONE_CHAR_LEX = ['(', ')', ':', ',', '.', '-', '+', '/', "\n"].freeze
     MULTI_CHAR_LEX = ['==', '!=', '==', '!=', '<>', '>=', '<=', '**', '='].freeze
-    KEYWORD = ['end', 'and', 'or'].freeze
+    KEYWORD = ['end', 'and', 'or', 'return'].freeze
 
     def initialize(source)
       raise 'source not provided' if source.nil? || source == ''

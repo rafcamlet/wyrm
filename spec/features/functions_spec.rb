@@ -147,4 +147,20 @@ describe 'functions' do
 
     it {is_expected.to include('first: 1', 'second: 1', 'first: 2', 'second: 2') }
   end
+
+  describe 'return' do
+    let(:code) do
+      %(
+        fn test(arg)
+          arg and return 5
+          10
+        end
+
+        print(test(true))
+        print(test(false))
+      )
+    end
+
+    it { is_expected.to include('5', '10')}
+  end
 end

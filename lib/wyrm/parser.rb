@@ -8,6 +8,7 @@ require 'wyrm/node/text'
 require 'wyrm/node/unary'
 require 'wyrm/node/binding'
 require 'wyrm/node/variable'
+require 'wyrm/node/return'
 
 module Wyrm
   class Parser
@@ -68,6 +69,8 @@ module Wyrm
           Node::Text.new(token.type, token.lexeme)
         elsif UNARY_OPERATORS.include? token.type
           parse_unary_operator
+        elsif token.type == :return
+          parse_return
         elsif token.type == :"\n"
           nil
         else
@@ -202,6 +205,11 @@ module Wyrm
       raise 'Function not closed' unless get_if(:")")
 
       args
+    end
+
+    def parse_return
+      get_token
+      Node::Return.new(:return, nil, parse)
     end
 
     def next_token

@@ -25,7 +25,7 @@ module Wyrm
       end
 
       def eval
-        raise 'not implemented'
+        raise 'eval not implemented'
       end
     end
   end

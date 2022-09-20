@@ -11,13 +11,14 @@ module Wyrm
 
     def eval
       lexemes = Lexer.new(@code).call
-      result = Parser.new(lexemes, self).call.eval
+      main_node = Parser.new(lexemes, self).call
+      main_node.eval
       self
     end
 
     def render
       lexemes = Lexer.new(@code).call
-      result = Parser.new(lexemes, self).call.render
+      Parser.new(lexemes, self).call.render
       puts '=' * 20
       pp @stack
       self
@@ -29,7 +30,7 @@ module Wyrm
       stack.find do |s|
         break if s[:__scope__]
 
-        s[key]
+        s.key? key
       end&.fetch(key)
     end
 
@@ -39,7 +40,7 @@ module Wyrm
       arr = stack.find do |s|
         break if s[:__scope__]
 
-        s[key.to_sym]
+        s.key? key
       end
 
       if arr

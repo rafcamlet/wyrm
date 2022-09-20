@@ -15,7 +15,9 @@ module Wyrm
         ctx.change_stack(@context) do
           ctx.stack.unshift({})
           bind_params(args)
-          result = children.map { |child| child.eval(context: ctx.stack.dup) }.last
+          result = catch(:return) do
+            children.map { |child| child.eval(context: ctx.stack.dup) }.last
+          end
           ctx.stack.shift
         end
         result
